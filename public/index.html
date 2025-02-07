@@ -27,77 +27,29 @@
     <section id="file-section">
       <h2>File Upload</h2>
       <input type="file" id="file-input" multiple>
+      <!-- for now implementation for just one file -->
       <button id="upload-file">Upload File</button>
-      <ul id="file-list">
-        <!-- Uploaded files will appear here -->
-      </ul>
+      <button id="delete-all-files">Delete All Files</button>
+      <button id="download-all-files">Download All Files</button>
+
+      <div class="uploadedFilesSection">
+        <ul id="file-list">
+          <!-- <li>
+            <div>
+              <span>TestName</span>
+              <button class="download-file">Download</button>
+              <button class="delete-file">Delete</button>
+            </div>
+          </li> -->
+        </ul>
+      </div>
+
     </section>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io(); // Establishes connection with the Socket.io server
-    // The io() function automatically connects the client to the Socket.io server that is running on the same domain and port from which the page was served. It will try to connect to http://localhost:5000 (or the appropriate server URL).
-    socket.on('connect', () => {
-      console.log("Client connected to server via Socket.io");
-      fetch('/getTextFromServer', {
-        method: 'GET'
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log(`DATA: ${data.message}`);
-          document.getElementById("display-text").value = data.message;
-        })
-        .catch(err => {
-          console.error("Error:", err);
-        });
-    });
+  <script src="index.js"></script>
 
-    socket.on('disconnect', () => {
-      console.log("Client disconnected from server");
-    });
-
-    socket.on('textUpdated', (data) => {
-      document.getElementById("display-text").value = data.text;
-    });
-  </script>
-  <script>
-    const saveTextButton = document.getElementById("save-text");
-    const deleteTextButton = document.getElementById("delete-text");
-
-    saveTextButton.addEventListener('click', () => {
-      const textToSend = document.getElementById("new-text").value;
-      if (textToSend.length <= 0) {
-        alert("Please enter some text before saving.");
-      }
-
-      document.getElementById("display-text").value = textToSend;
-      fetch("/updateTextFromServer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text: textToSend })
-      })
-        .then(res => res.json()).then(data => console.log(data)).catch(err => console.error("ERROR:", err));
-    });
-
-    deleteTextButton.addEventListener('click', () => {
-
-      document.getElementById("display-text").value = '';
-
-      fetch("/updateTextFromServer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text: '' })
-      })
-        .then(res => res.json()).then(data => console.log(data)).catch(err => console.error("ERROR:", err));
-
-    });
-
-  </script>
 </body>
 
 </html>
